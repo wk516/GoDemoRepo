@@ -51,4 +51,23 @@ jobs:
     - name: Install dependencies
       run: |
         go get github.com/franela/goblin
+        go get github.com/tebeka/go2xunit
         go test -v
+        go test -v  | go2xunit > report.xml
+        ls
+        
+    - name: Publish Unit Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1
+      if: always()
+      with:
+        files: report.xml
+    - if: ${{ failure() }}
+    
+      name: Create Issues
+      uses: nashmaniac/create-issue-action@v1.1
+      with:
+          title: Build Failed
+          token: ${{secrets.GITHUB_TOKEN}}
+          assignees: ${{github.actor}}
+          labels: workflow-failed
+          body: Workflow failed for commit ${{github.sha}}
