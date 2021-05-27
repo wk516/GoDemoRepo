@@ -41,6 +41,6 @@ jobs:
           path: remoteRepo
           token: ${{ secret.GO_REMOTE }}
           
-      - name: Check file system
+      - name: Check files
         run: |
           ls
